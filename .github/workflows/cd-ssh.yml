@@ -21,7 +21,7 @@ jobs:
       - name: Build & Push image
         uses: docker/build-push-action@v5
         with:
-          context: ./boj_contest
+          context: .
           file: boj_contest/dockerfile
           push: true
           tags: |
