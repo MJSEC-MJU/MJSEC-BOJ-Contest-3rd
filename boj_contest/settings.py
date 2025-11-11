@@ -73,7 +73,11 @@ ROOT_URLCONF = "boj_contest.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [ BASE_DIR / "templates" ],
+        # 프로젝트 템플릿 폴더가 boj_contest/templates 하위에 있으므로 해당 경로를 우선 추가
+        "DIRS": [
+            BASE_DIR / "boj_contest" / "templates",
+            BASE_DIR / "templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -133,7 +137,8 @@ USE_TZ        = True
 # -----------------------------------------------------------------------------
 STATIC_URL        = "static/"
 STATIC_ROOT       = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS  = [ BASE_DIR / "static" ]
+# 정적 리소스가 boj_contest/static 하위에 존재하므로 해당 경로를 사용
+STATICFILES_DIRS  = [ BASE_DIR / "boj_contest" / "static" ]
 
 
 # -----------------------------------------------------------------------------
