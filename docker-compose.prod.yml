@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  web:
+    image: ${DOCKERHUB_USERNAME}/mjsec-boj:${IMAGE_TAG}
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn boj_contest.wsgi:application --bind 0.0.0.0:8000"
+    env_file:
+      - .env
+      - .deploy.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=boj_contest.settings
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+
+  nginx:
+    image: nginx:latest
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template
+      - certbot_www:/var/www/certbot
+      - certbot_etc:/etc/letsencrypt
+      - certbot_logs:/var/log/letsencrypt
+      - static_volume:/staticfiles
+      - media_volume:/media
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - certbot_etc:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+      - certbot_logs:/var/log/letsencrypt
+
+volumes:
+  static_volume:
+  media_volume:
+  certbot_etc:
+  certbot_www:
+  certbot_logs:
+

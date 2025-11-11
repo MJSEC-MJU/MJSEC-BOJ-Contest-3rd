@@ -13,9 +13,6 @@ jobs:
   django:
     name: Django checks and tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: boj_contest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r boj_contest/requirements.txt
 
       - name: Django system checks
         env:
@@ -43,8 +40,8 @@ jobs:
           DEBUG: '0'
           DJANGO_ALLOWED_HOSTS: localhost
         run: |
-          python manage.py check
-          python manage.py makemigrations --check --dry-run
+          python -m boj_contest.manage check
+          python -m boj_contest.manage makemigrations --check --dry-run
 
       - name: Run tests
         env:
@@ -52,7 +49,7 @@ jobs:
           DEBUG: '0'
           DJANGO_ALLOWED_HOSTS: localhost
         run: |
-          python manage.py test --noinput -v 2
+          python -m boj_contest.manage test --noinput -v 2
 
   docker-build:
     name: Docker build (sanity)
@@ -67,4 +64,3 @@ jobs:
       - name: Build image
         run: |
           docker build -f boj_contest/dockerfile -t mjsec-boj:ci boj_contest
-
