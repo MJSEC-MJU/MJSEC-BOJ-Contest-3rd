@@ -69,16 +69,16 @@ jobs:
             IMAGE_TAG='${{ github.sha }}' \
             DOCKERHUB_USERNAME='${{ secrets.DOCKERHUB_USERNAME }}' \
             bash -s <<'EOF'
-            set -euo pipefail
-            : "${REMOTE_DIR:?}"; : "${DOMAIN:?}"; : "${LETSENCRYPT_EMAIL:?}"; : "${IMAGE_TAG:?}"; : "${DOCKERHUB_USERNAME:?}"
+          set -euo pipefail
+          : "${REMOTE_DIR:?}"; : "${DOMAIN:?}"; : "${LETSENCRYPT_EMAIL:?}"; : "${IMAGE_TAG:?}"; : "${DOCKERHUB_USERNAME:?}"
 
-            mkdir -p "$REMOTE_DIR"/{nginx,certbot/{config,www,logs}}
-            [ -f "$REMOTE_DIR/.env" ] || touch "$REMOTE_DIR/.env"
+          mkdir -p "$REMOTE_DIR"/{nginx,certbot/{config,www,logs}}
+          [ -f "$REMOTE_DIR/.env" ] || touch "$REMOTE_DIR/.env"
 
-            # 여기서 .deploy.env를 정확히 생성
-            printf 'DOMAIN=%s\nLETSENCRYPT_EMAIL=%s\nIMAGE_TAG=%s\nDOCKERHUB_USERNAME=%s\n' \
-              "$DOMAIN" "$LETSENCRYPT_EMAIL" "$IMAGE_TAG" "$DOCKERHUB_USERNAME" > "$REMOTE_DIR/.deploy.env"
-            EOF
+          printf 'DOMAIN=%s\nLETSENCRYPT_EMAIL=%s\nIMAGE_TAG=%s\nDOCKERHUB_USERNAME=%s\n' \
+            "$DOMAIN" "$LETSENCRYPT_EMAIL" "$IMAGE_TAG" "$DOCKERHUB_USERNAME" > "$REMOTE_DIR/.deploy.env"
+          EOF
+
 
       # ── 2. HTTP-only 템플릿 & Compose 업로드 ─────────────────────────────
       - name: Upload HTTP-only Nginx template and compose
