@@ -22,7 +22,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: boj_contest/dockerfile
+          file: Dockerfile.prod
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/mjsec-boj:${{ github.sha }}
@@ -241,4 +241,3 @@ jobs:
       - name: Failure notice
         if: failure()
         run: echo "Deployment to ${{ secrets.DOMAIN }} failed"
-

@@ -1,0 +1,21 @@
+FROM python:3.11
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Install dependencies
+COPY boj_contest/requirements.txt .
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Copy application source preserving package path
+COPY boj_contest /app/boj_contest
+
+# Set working directory to the Django project package
+WORKDIR /app/boj_contest
+
+# Default command (gunicorn)
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "boj_contest.wsgi:application"]
+
