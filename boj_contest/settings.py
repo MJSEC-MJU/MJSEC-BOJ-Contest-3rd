@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "competition",
+    'boj_contest.competition.apps.CompetitionConfig',
     "feed",
     "user",
 ]
