@@ -95,14 +95,26 @@ jobs:
       - name: Start HTTP-only stack
         run: |
           ssh ${{ secrets.GCP_USER }}@${{ secrets.GCP_HOST }} "
-            cd '${{ env.REMOTE_DIR }}' &&
-            if docker compose version >/dev/null 2>&1; then C='docker compose'; else C='docker-compose'; fi &&
+            set -euo pipefail
+            cd '${{ env.REMOTE_DIR }}'
+
+            if docker compose version >/dev/null 2>&1; then
+              C='docker compose'
+            elif command -v docker-compose >/dev/null 2>&1; then
+              C='docker-compose'
+            else
+              echo 'ERROR: docker compose / docker-compose not found on remote host' >&2
+              exit 1
+            fi
+
             set -a
             . ./.env
             set +a
-            \$C -f docker-compose.prod.yml down --remove-orphans || true &&
+
+            \$C -f docker-compose.prod.yml down --remove-orphans || true
             \$C -f docker-compose.prod.yml up -d nginx web
           "
+
 
       # ── 4. HTTP 응답 대기 ───────────────────────────────────────────────
       - name: Wait for HTTP
@@ -184,14 +196,26 @@ jobs:
       - name: Deploy latest stack
         run: |
           ssh ${{ secrets.GCP_USER }}@${{ secrets.GCP_HOST }} "
-            cd '${{ env.REMOTE_DIR }}' &&
-            if docker compose version >/dev/null 2>&1; then C='docker compose'; else C='docker-compose'; fi &&
+            set -euo pipefail
+            cd '${{ env.REMOTE_DIR }}'
+
+            if docker compose version >/dev/null 2>&1; then
+              C='docker compose'
+            elif command -v docker-compose >/dev/null 2>&1; then
+              C='docker-compose'
+            else
+              echo 'ERROR: docker compose / docker-compose not found on remote host' >&2
+              exit 1
+            fi
+
             set -a
             . ./.env
             set +a
-            \$C -f docker-compose.prod.yml pull &&
+
+            \$C -f docker-compose.prod.yml pull
             \$C -f docker-compose.prod.yml up -d --remove-orphans
           "
+
 
       # ── 10. HTTPS 검증 ──────────────────────────────────────────────────
       - name: Verify HTTPS
