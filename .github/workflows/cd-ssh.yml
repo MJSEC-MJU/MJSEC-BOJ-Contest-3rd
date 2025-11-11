@@ -97,8 +97,8 @@ jobs:
           ssh ${{ secrets.GCP_USER }}@${{ secrets.GCP_HOST }} "
             cd '${{ env.REMOTE_DIR }}' &&
             if docker compose version >/dev/null 2>&1; then C='docker compose'; else C='docker-compose'; fi &&
-            $C -f docker-compose.prod.yml down --remove-orphans || true &&
-            $C -f docker-compose.prod.yml up -d nginx web
+            \$C -f docker-compose.prod.yml down --remove-orphans || true &&
+            \$C -f docker-compose.prod.yml up -d nginx web
           "
 
       # ── 4. HTTP 응답 대기 ───────────────────────────────────────────────
@@ -117,7 +117,7 @@ jobs:
           ssh ${{ secrets.GCP_USER }}@${{ secrets.GCP_HOST }} "
             cd '${{ env.REMOTE_DIR }}' &&
             if docker compose version >/dev/null 2>&1; then C='docker compose'; else C='docker-compose'; fi &&
-            $C -f docker-compose.prod.yml run --rm certbot \
+            \$C -f docker-compose.prod.yml run --rm certbot \
               certonly --webroot -w /var/www/certbot \
               --non-interactive --keep-until-expiring \
               --email '${{ env.LETSENCRYPT_EMAIL }}' -d '${{ env.DOMAIN }}' \
@@ -131,7 +131,7 @@ jobs:
             set -euo pipefail
             cd '${{ env.REMOTE_DIR }}'
             if docker compose version >/dev/null 2>&1; then C='docker compose'; else C='docker-compose'; fi
-            $C -f docker-compose.prod.yml run --rm --entrypoint "" certbot sh -euxc '
+            \$C -f docker-compose.prod.yml run --rm --entrypoint "" certbot sh -euxc '
               OPTIONS=/etc/letsencrypt/options-ssl-nginx.conf
               DHPARAM=/etc/letsencrypt/ssl-dhparams.pem
               mkdir -p /etc/letsencrypt
@@ -171,7 +171,7 @@ jobs:
             set -euo pipefail
             cd '${{ env.REMOTE_DIR }}'
             if docker compose version >/dev/null 2>&1; then C='docker compose'; else C='docker-compose'; fi
-            $C -f docker-compose.prod.yml exec nginx sh -c "
+            \$C -f docker-compose.prod.yml exec nginx sh -c "
               envsubst '\$DOMAIN' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf &&
               nginx -s reload
             "
@@ -183,8 +183,8 @@ jobs:
           ssh ${{ secrets.GCP_USER }}@${{ secrets.GCP_HOST }} "
             cd '${{ env.REMOTE_DIR }}' &&
             if docker compose version >/dev/null 2>&1; then C='docker compose'; else C='docker-compose'; fi &&
-            $C -f docker-compose.prod.yml pull &&
-            $C -f docker-compose.prod.yml up -d --remove-orphans
+            \$C -f docker-compose.prod.yml pull &&
+            \$C -f docker-compose.prod.yml up -d --remove-orphans
           "
 
       # ── 10. HTTPS 검증 ──────────────────────────────────────────────────
