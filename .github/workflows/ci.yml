@@ -13,9 +13,8 @@ jobs:
   django:
     name: Django checks and tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: boj_contest
+    env:
+      PYTHONPATH: ${{ github.workspace }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,11 +32,13 @@ jobs:
           restore-keys: ${{ runner.os }}-pip-
 
       - name: Install dependencies
+        working-directory: ./boj_contest
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Django system checks
+        working-directory: ./boj_contest
         env:
           DJANGO_SECRET_KEY: dummy_ci_secret
           DEBUG: '0'
@@ -47,6 +48,7 @@ jobs:
           python manage.py makemigrations --check --dry-run
 
       - name: Run tests
+        working-directory: ./boj_contest
         env:
           DJANGO_SECRET_KEY: dummy_ci_secret
           DEBUG: '0'
@@ -67,4 +69,5 @@ jobs:
       - name: Build image
         run: |
           docker build -f boj_contest/dockerfile -t mjsec-boj:ci boj_contest
-
+          # 만약 실제 파일명이 Dockerfile이면:
+          # docker build -f boj_contest/Dockerfile -t mjsec-boj:ci boj_contest
