@@ -15,7 +15,7 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 프로젝트 파일을 컨테이너에 복사
-COPY . .
+COPY . /app/boj_contest
 
 # 🔥 마이그레이션 + gunicorn 실행 (manage는 boj_contest 패키지 안에 있음)
-CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn --bind 0.0.0.0:8000 wsgi:application"]
+CMD ["sh", "-c", "python -m boj_contest.manage migrate --noinput && gunicorn --bind 0.0.0.0:8000 boj_contest.wsgi:application"]

@@ -3,18 +3,11 @@ version: '3.8'
 services:
   web:
     image: ${DOCKERHUB_USERNAME}/mjsec-boj:${IMAGE_TAG}
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py collectstatic --noinput &&
-             gunicorn boj_contest.wsgi:application --bind 0.0.0.0:8000"
+    restart: unless-stopped
     env_file:
       - .env
-      - .deploy.env
-    environment:
-      - DJANGO_SETTINGS_MODULE=boj_contest.settings
-    volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
+    depends_on:
+      - nginx
 
   nginx:
     image: nginx:latest
