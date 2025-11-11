@@ -35,6 +35,7 @@ jobs:
           pip install -r boj_contest/requirements.txt
 
       - name: Django system checks
+        working-directory: ./boj_contest
         env:
           DJANGO_SECRET_KEY: dummy_ci_secret
           DEBUG: '0'
@@ -44,6 +45,7 @@ jobs:
           python -m boj_contest.manage makemigrations --check --dry-run
 
       - name: Run tests
+        working-directory: ./boj_contest
         env:
           DJANGO_SECRET_KEY: dummy_ci_secret
           DEBUG: '0'

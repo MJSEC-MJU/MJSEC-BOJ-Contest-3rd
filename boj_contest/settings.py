@@ -53,9 +53,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'boj_contest.competition',
-    "boj_contest.feed",
-    "boj_contest.user",
+    "competition",
+    "feed",
+    "user",
 ]
 
 MIDDLEWARE = [
