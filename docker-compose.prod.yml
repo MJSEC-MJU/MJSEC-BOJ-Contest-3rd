@@ -16,8 +16,8 @@ services:
       - PYTHONPATH=/app
       - DJANGO_SETTINGS_MODULE=boj_contest.settings
     volumes:
-      - static_volume:/app/boj_contest/staticfiles
-      - media_volume:/app/boj_contest/media
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
 
   nginx:
     image: nginx:latest
